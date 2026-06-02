@@ -1,5 +1,6 @@
 class Empresa {
     const profesionales = []
+    const clientes = []
     const property honorarioReferencia
 
     method contratarA(profesional) {
@@ -43,10 +44,33 @@ class Empresa {
     }
 
     method puedeSatisfacerASolicitante(solicitante) {
-        return profesionales.any({p => solicitante.puedeSerAtendidoPor(p)})
+        return profesionales.any({p => self.profesionalSatisfaceASolicitante(p, solicitante)})
     }
 
-    method darSueldosFijos(cantDinero) {
-        profesionales.forEach({p => p.cobrar(cantDinero)})
+    method profesionalSatisfaceASolicitante(profesional, solicitante) {
+        return solicitante.puedeSerAtendidoPor(profesional)
+    }
+
+    method darServicio(solicitante) {
+        if (self.puedeSatisfacerASolicitante(solicitante)) {
+            self.profesionalDaServicioASolicitante(self.profesionalQuePuedeSatisfacerASolicitante(solicitante))
+            clientes.add(solicitante)
+        }
+    }
+
+    method profesionalDaServicioASolicitante(profesional) {
+        profesional.cobrar(profesional.honorariosPorHora())
+    }
+
+    method profesionalQuePuedeSatisfacerASolicitante(solicitante) {
+        return profesionales.find({p => self.profesionalSatisfaceASolicitante(p, solicitante)})
+    }
+
+    method cantClientes() {
+        return clientes.size()
+    }
+
+    method esCliente(solicitante) {
+        return clientes.contains(solicitante)
     }
 }
