@@ -45,4 +45,8 @@ class Empresa {
     method puedeSatisfacerASolicitante(solicitante) {
         return profesionales.any({p => solicitante.puedeSerAtendidoPor(p)})
     }
+
+    method darSueldosFijos(cantDinero) {
+        profesionales.forEach({p => p.cobrar(cantDinero)})
+    }
 }
