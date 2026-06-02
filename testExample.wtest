@@ -1,9 +1,58 @@
-import example.pepita
+import empresas.*
+import profesionales.*
+import provincias.*
 
-describe "group of tests for pepita" {
+describe "Tests de etapa 1" {
+  // --- UNIVERSIDAD ---
+  const deSanMartin = new Universidad(provincia = buenosAires, honorariosRecomendados = 3500)
+  const deRosario = new Universidad(provincia = santaFe, honorariosRecomendados = 2800)
+  const deCorrientes = new Universidad(provincia = corrientes, honorariosRecomendados = 4200)
+  const deHurlingham = new Universidad(provincia = buenosAires, honorariosRecomendados = 8800)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  // --- PROFESIONALES ---
+  const juana = new ProfesionalVinculado(universidad = deRosario)
+  const melina = new ProfesionalDelLitoral(universidad = deCorrientes)
+  const rocio = new ProfesionalLibre(universidad = deHurlingham, honorariosPorHora = 5000, provincias = [santaFe, cordoba, buenosAires])
+  const luciana = new ProfesionalLibre(universidad = deRosario, honorariosPorHora = 3200, provincias = [santaFe, entreRios])
+
+  // --- EMPRESA ---
+  const empresa = new Empresa(honorarioReferencia = 3500)
+
+  method initialize() {
+    empresa.contratarAVarios([juana, melina, rocio, luciana])
   }
 
+  test "Dos de los profesionales de la empresa estudiaron en rosario" {
+    assert.equals(2, empresa.cantProfesionalesDeUniversidad(deRosario))
+  }
+
+  test "Uno de los profesionales de la empresa estudio en hurlingham" {
+    assert.equals(1, empresa.cantProfesionalesDeUniversidad(deHurlingham))
+  }
+
+  test "Ninguno de los profesionales de la empresa estudio en san martín" {
+    assert.equals(0, empresa.cantProfesionalesDeUniversidad(deSanMartin))
+  }
+
+  test "La única profesional cara es Rocío" {
+    assert.equals([rocio], empresa.profesionalesCaros())
+  }
+
+  test "Las universidades formadoras son la de rosario, la de corrientes y la de hurlingham" {
+    assert.equals(#{deRosario, deCorrientes, deHurlingham}, empresa.universidadesFormadoras())
+  }
+
+  test "La profesional más barata es juana" {
+    assert.equals(juana, empresa.profesionalMasBarato())
+  }
+
+  test "La empresa es de gente acotada" {
+    assert.that(empresa.esDeGenteAcotada())
+  }
+
+  test "Aunque luciana tenga dos provincias más, la empresa sigue siendo de gente acotada" {
+    luciana.agregarProvincias([corrientes,cordoba])
+
+    assert.that(empresa.esDeGenteAcotada())
+  }
 }
