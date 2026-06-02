@@ -1,6 +1,7 @@
 import empresas.*
 import profesionales.*
 import provincias.*
+import solicitantes.*
 
 describe "Tests de etapa 1" {
   // --- UNIVERSIDAD ---
@@ -50,9 +51,62 @@ describe "Tests de etapa 1" {
     assert.that(empresa.esDeGenteAcotada())
   }
 
-  test "Aunque luciana tenga dos provincias más, la empresa sigue siendo de gente acotada" {
+  test "Aunque luciana tenga dos provincias más, la empresa sigue siendo de gente acotada (por juana)" {
     luciana.agregarProvincias([corrientes,cordoba])
 
     assert.that(empresa.esDeGenteAcotada())
+  }
+}
+
+describe "Tests de etapa 2" {
+  // --- UNIVERSIDAD ---
+  const deSanMartin = new Universidad(provincia = buenosAires, honorariosRecomendados = 3500)
+  const deRosario = new Universidad(provincia = santaFe, honorariosRecomendados = 2800)
+  const deCorrientes = new Universidad(provincia = corrientes, honorariosRecomendados = 4200)
+  const deHurlingham = new Universidad(provincia = buenosAires, honorariosRecomendados = 8800)
+
+  // --- PROFESIONALES ---
+  const juana = new ProfesionalVinculado(universidad = deRosario)
+  const melina = new ProfesionalDelLitoral(universidad = deCorrientes)
+  const rocio = new ProfesionalLibre(universidad = deHurlingham, honorariosPorHora = 5000, provincias = [santaFe, cordoba, buenosAires])
+  const luciana = new ProfesionalLibre(universidad = deRosario, honorariosPorHora = 3200, provincias = [santaFe, entreRios])
+
+  // --- SOLICITANTES ---
+  const sergio = new Persona(provincia = corrientes)
+  const luana = new Persona(provincia = sanJuan)
+  const airesRenovados = new Institucion(universidadesReconocidas = [deCorrientes, deRosario])
+  const almaFuego = new Institucion(universidadesReconocidas = [deSanMartin])
+  const clubRojo = new Club(provincias = [corrientes, buenosAires, santaFe, sanJuan])
+  const clubVerde = new Club(provincias = [sanJuan, tierraDelFuego])
+
+  // --- EMPRESA ---
+  const empresa = new Empresa(honorarioReferencia = 3500)
+
+  method initialize() {
+    empresa.contratarAVarios([juana, melina, rocio, luciana])
+  }
+
+  test "Sergio puede ser satisfecho por la empresa" {
+    assert.that(empresa.puedeSatisfacerASolicitante(sergio))
+  }
+
+  test "Luana no puede ser satisfecha por la empresa" {
+    assert.notThat(empresa.puedeSatisfacerASolicitante(luana))
+  }
+
+  test "Aires Renovado puede ser satisfecho por la empresa" {
+    assert.that(empresa.puedeSatisfacerASolicitante(airesRenovados))
+  }
+
+  test "Alma Fuego no puede ser satisfecho por la empresa" {
+    assert.notThat(empresa.puedeSatisfacerASolicitante(almaFuego))
+  }
+
+  test "Club Rojo puede ser satisfecho por la empresa" {
+    assert.that(empresa.puedeSatisfacerASolicitante(clubRojo))
+  }
+
+  test "Club Verde no puede ser satisfecho por la empresa" {
+    assert.notThat(empresa.puedeSatisfacerASolicitante(clubVerde))
   }
 }

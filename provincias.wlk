@@ -7,3 +7,7 @@ object santaFe {}
 object buenosAires {}
 
 object cordoba {}
+
+object sanJuan {}
+
+object tierraDelFuego {}
